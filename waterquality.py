@@ -5,8 +5,6 @@ import joblib
 import streamlit as st
 
 # Load the model and columns
-#model = joblib.load("C:/Users/vidhaya/Downloads/pollution_model.pkl")
-#model_cols = joblib.load("C:/Users/vidhaya/Downloads/model_columns.pkl")
 model = joblib.load("pollution_model.pkl")
 model_cols = joblib.load("model_columns.pkl")
 
@@ -14,14 +12,14 @@ model_cols = joblib.load("model_columns.pkl")
 st.title("💧 Water Quality Predictor")
 st.write("Predict the water pollutants based on Year and Station ID")
 
-# User inputs
-year_input = st.number_input("Enter Year", min_value=2000, max_value=2100, value=2022)
-station_id = st.text_input("Enter Station ID", value='1')
+# User inputs with unique keys
+year_input = st.number_input("Enter Year", min_value=2000, max_value=2100, value=2022, key="year_input")
+station_id = st.text_input("Enter Station ID", value='1', key="station_id_input")
 
 # On Predict button click
-if st.button('Predict'):
-    if not station_id:
-        st.warning('Please enter the station ID')
+if st.button('Predict', key="predict_button"):
+    if not station_id.strip():
+        st.warning('Please enter the station ID', key="warn")
     else:
         # Prepare input
         input_df = pd.DataFrame({'year': [year_input], 'id': [station_id]})
@@ -71,6 +69,6 @@ if st.button('Predict'):
             label="Download CSV",
             data=csv,
             file_name=f"pollution_prediction_{station_id}_{year_input}.csv",
-            mime='text/csv'
+            mime='text/csv',
+            key="download_csv"
         )
-
